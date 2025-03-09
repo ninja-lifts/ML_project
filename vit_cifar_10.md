@@ -1,7 +1,7 @@
 # Self Attention Mechanism 
 ```ruby
-   class SelfAttention(nn.Module):
-    def __init__(self, embedding_dims, heads, dropout):
+class SelfAttention(nn.Module):
+  def __init__(self, embedding_dims, heads, dropout):
         super(SelfAttention, self).__init__()
         self.heads = heads
         self.embedding_dims = embedding_dims
@@ -13,8 +13,7 @@
 
         self.fc = nn.Linear(self.head_dims * self.heads, self.embedding_dims)
         self.dropout = nn.Dropout(dropout)
-```
-```ruby
+
   def forward(self, query, key, value, mask):
     Batch = query.shape[0]
     query_len, key_len, value_len = query.shape[1], key.shape[1], value.shape[1]
@@ -44,7 +43,7 @@
 ```
 # Transformer block
 ```ruby
-   class TransformerBlock(nn.Module):
+ class TransformerBlock(nn.Module):
     def __init__(self, embedding_dims, heads, dropout, forward_expansion, layer_norm_eps):
         super(TransformerBlock, self).__init__()
         self.layer_norm1 = nn.LayerNorm(embedding_dims, eps=layer_norm_eps)
@@ -70,7 +69,7 @@
 ```
 # Vit Model
 ```ruby
-      class ViT(nn.Module):
+ class ViT(nn.Module):
     def __init__(
         self, patch_height, patch_width, max_len, embedding_dims, heads,
         forward_expansion, num_layers, dropout, layer_norm_eps, num_classes
