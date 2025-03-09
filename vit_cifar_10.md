@@ -104,38 +104,74 @@
         )
         self.dropout = nn.Dropout(dropout)
 ```
-# Splitting image into patches
+# Splitting image into patches then patch , positional embedding and classfication embeddding
 ```ruby
-    def forward(self, images):
-    patches = images.unfold(2, self.patch_height, self.patch_width).unfold(3, self.patch_height, self.patch_width)
-    patches = patches.permute(0, 2, 3, 1, 4, 5)
-    patches = patches.reshape(
-        patches.shape[0],
-        patches.shape[1],
-        patches.shape[2],
-        patches.shape[3] * patches.shape[4] * patches.shape[5]
-    )
-    patches = patches.view(patches.shape[0], -1, patches.shape[-1])
+   def forward(self, images):
+        patches = images.unfold(2, self.patch_height, self.patch_width).unfold(3, self.patch_height, self.patch_width)
+        patches = patches.permute(0, 2, 3, 1, 4, 5)
+        patches = patches.reshape(
+            patches.shape[0],
+            patches.shape[1],
+            patches.shape[2],
+            patches.shape[3] * patches.shape[4] * patches.shape[5]
+        )
+        patches = patches.view(patches.shape[0], -1, patches.shape[-1])
+        x = self.cls_embedding.expand(patches.shape[0], -1, -1)
+        patch_embeddings = self.patch_embeddings(patches)
+        x = torch.cat((x, patch_embeddings), dim=1) + self.postional_embedding
+        x = self.dropout(x)
+        mask = None
+        for block in self.vit_blocks:
+            x = block(x, mask)
+        out = self.to_cls_token(x[:, 0])
+        out = self.classifier(out)
+        return out
 ```
-# Train
+# Training on Cifar-10
 ```ruby
-     if __name__ == "__main__":
-    model = ViT(
-        patch_height=16,
-        patch_width=16,
-        embedding_dims=768,
-        dropout=0.1,
-        heads=4,
-        num_layers=4,
-        forward_expansion=4,
-        max_len=int((32 * 32) / (16 * 16)),
-        layer_norm_eps=1e-5,
-        num_classes=10,
-    )
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    a = torch.randn(32, 3, 32, 32)
-    output = model(a)
-    print(output.shape)
+transform = transforms.Compose([
+    transforms.Resize(32),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.5], std=[0.5])
+])
+
+train_dataset = CIFAR10(root="./data", train=True, transform=transform, download=True)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+test_dataset = CIFAR10(root="./data", train=False, transform=transform, download=True)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+
+model = ViT(
+    patch_height=16,
+    patch_width=16,
+    embedding_dims=768,
+    dropout=0.1,
+    heads=4,
+    num_layers=4,
+    forward_expansion=4,
+    max_len=int((32 * 32) / (16 * 16)),
+    layer_norm_eps=1e-5,
+    num_classes=10,
+).to(device)
+
+optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
+criterion = nn.CrossEntropyLoss()
+
+for epoch in range(10):
+    model.train()
+    total_loss = 0
+    for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item()
+    print(f"Epoch {epoch+1}, Loss: {total_loss/len(train_loader)}")
+
 ```
 
 
