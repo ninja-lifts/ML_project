@@ -42,7 +42,7 @@
     out = self.dropout(self.fc(out))
     return out
 ```
-#Transformer block
+# Transformer block
 ```ruby
    class TransformerBlock(nn.Module):
     def __init__(self, embedding_dims, heads, dropout, forward_expansion, layer_norm_eps):
