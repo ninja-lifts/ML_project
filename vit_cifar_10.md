@@ -75,6 +75,8 @@ class SelfAttention(nn.Module): # This defines a class SelfAttention, which inhe
         self.dropout = nn.Dropout(dropout)
     
     def forward(self, x, mask):
+       #   Define input tensor (batch_size=2, seq_length=5, embedding_dim=128 , Expected output: torch.Size([2, 5, 128]) 
+
         norm = self.layer_norm1(x)
         attention_block = self.attention(norm, norm, norm, mask)
         add = x + attention_block
