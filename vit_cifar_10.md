@@ -113,26 +113,35 @@ class SelfAttention(nn.Module):
 ```
 # Splitting image into patches then patch , positional embedding and classfication embeddding
 ```ruby
-   def forward(self, images):   # image size = [batch_size, channels, height, width]
-        patches = images.unfold(2, self.patch_height, self.patch_width).unfold(3, self.patch_height, self.patch_width)
-        patches = patches.permute(0, 2, 3, 1, 4, 5)
+   def forward(self, images):   # image size = [batch_size, channels, height, width] , eg. -> (N , 3 , 32 , 32)
+        patches = images.unfold(2, self.patch_height, self.patch_width).unfold(3, self.patch_height, self.patch_width)  # # 
+              # Extracting small patches , extracting small patches along dim = 2(height) , extracting along width(dim = 3)   
+        patches = patches.permute(0, 2, 3, 1, 4, 5) # rearanging patches so easy use later in reshapping .
+         # 0 → batch size (unchanged).
+         # 2,3 → number of patches along height and width.
+         # 1 → the number of channels.
+         # 4,5 → patch height and width.
+
         patches = patches.reshape(
             patches.shape[0],
             patches.shape[1],
             patches.shape[2],
             patches.shape[3] * patches.shape[4] * patches.shape[5]
-        )
+        ) # Now the patches tensor has shape [batch_size, num_patches_height, num_patches_width, flattened_patch_size]
+
         patches = patches.view(patches.shape[0], -1, patches.shape[-1])
         x = self.cls_embedding.expand(patches.shape[0], -1, -1)
+          # The class (CLS) token is a special trainable vector that acts as a summary representation of the entire image.
         patch_embeddings = self.patch_embeddings(patches)
+          # This step converts the raw patch vectors into meaningful feature representations.
         x = torch.cat((x, patch_embeddings), dim=1) + self.postional_embedding
         x = self.dropout(x)
         mask = None
         for block in self.vit_blocks:
             x = block(x, mask)
         out = self.to_cls_token(x[:, 0])
-        out = self.classifier(out)
-        return out
+        out = self.classifier(out) # This is the final classification layer (probably a fully connected layer with softmax activation).
+        return out  # This layer produces the final class scores.
 ```
 # Training on Cifar-10
 ```ruby
