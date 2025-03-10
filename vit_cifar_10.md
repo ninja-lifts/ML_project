@@ -8,8 +8,12 @@ from torch.utils.data import DataLoader
 ```
 # Self Attention Mechanism 
 ```ruby
-class SelfAttention(nn.Module):
+class SelfAttention(nn.Module): # This defines a class SelfAttention, which inherits from torch.nn.Module
   def __init__(self, embedding_dims, heads, dropout):
+        #__init__ is the constructor that initializes the parameters.
+        # embedding_dims: The size of the input embedding (total feature dimensions).
+        # heads: The number of attention heads (splitting embeddings into multiple attention subspaces).
+        # dropout: A dropout rate for regularization to prevent overfitting 
         super(SelfAttention, self).__init__()
         self.heads = heads
         self.embedding_dims = embedding_dims
@@ -18,6 +22,7 @@ class SelfAttention(nn.Module):
         self.key = nn.Linear(self.head_dims, self.head_dims , bias = False)
         self.query = nn.Linear(self.head_dims, self.head_dims , bias = False)
         self.value = nn.Linear(self.head_dims, self.head_dims , bias = False)
+        # nn.Linear(in_features, out_features, bias): A fully connected linear transformation layer
 
         self.fc = nn.Linear(self.head_dims * self.heads, self.embedding_dims)
         self.dropout = nn.Dropout(dropout)
@@ -40,6 +45,8 @@ class SelfAttention(nn.Module):
         attention_score = attention_score.masked_fill(mask == 0, float('-1e20'))
 
     attention_score = attention_score / ((self.head_dims) ** (1/2))
+      # Normalizes the attention scores by dividing by 𝑑𝑘 (square root of head dimensions). Prevents large values from 
+      # causing instability in softmax.
     attention_score = torch.softmax(attention_score, dim=-1)
 
     out = torch.einsum('bhqv,bvhd->bqhd', [attention_score, value]).reshape(
