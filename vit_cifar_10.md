@@ -60,6 +60,7 @@ class SelfAttention(nn.Module): # This defines a class SelfAttention, which inhe
 ```ruby
  class TransformerBlock(nn.Module):
     def __init__(self, embedding_dims, heads, dropout, forward_expansion, layer_norm_eps):
+        # layer_norm_eps: Small value added to avoid division by zero in LayerNorm.
         super(TransformerBlock, self).__init__()
         self.layer_norm1 = nn.LayerNorm(embedding_dims, eps=layer_norm_eps)
         self.layer_norm2 = nn.LayerNorm(embedding_dims, eps=layer_norm_eps)
