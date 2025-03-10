@@ -113,7 +113,7 @@ class SelfAttention(nn.Module):
 ```
 # Splitting image into patches then patch , positional embedding and classfication embeddding
 ```ruby
-   def forward(self, images):
+   def forward(self, images):   # image size = [batch_size, channels, height, width]
         patches = images.unfold(2, self.patch_height, self.patch_width).unfold(3, self.patch_height, self.patch_width)
         patches = patches.permute(0, 2, 3, 1, 4, 5)
         patches = patches.reshape(
