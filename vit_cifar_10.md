@@ -5,6 +5,8 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
+#  embedding_dim : represents the size of the feature vector for each token (patch) in the Vision Transformer (ViT) , # 
+   decided during patch_embedding .
 ```
 # Self Attention Mechanism 
 ```ruby
