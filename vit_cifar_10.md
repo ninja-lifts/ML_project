@@ -111,7 +111,8 @@ class SelfAttention(nn.Module): # This defines a class SelfAttention, which inhe
         #   TransformerBlock(...),
         #   TransformerBlock(...),
         #   TransformerBlock(...)
-)
+        #  )
+
         self.patch_height = patch_height
         self.patch_width = patch_width
         self.cls_embedding = nn.Parameter(torch.zeros(1, 1, embedding_dims))
