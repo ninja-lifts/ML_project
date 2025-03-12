@@ -106,6 +106,12 @@ class SelfAttention(nn.Module): # This defines a class SelfAttention, which inhe
                 for _ in range(num_layers)
             ]
         )
+        # self.vit_blocks = nn.Sequential(
+        #   TransformerBlock(...),
+        #   TransformerBlock(...),
+        #   TransformerBlock(...),
+        #   TransformerBlock(...)
+)
         self.patch_height = patch_height
         self.patch_width = patch_width
         self.cls_embedding = nn.Parameter(torch.zeros(1, 1, embedding_dims))
