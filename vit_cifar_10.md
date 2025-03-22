@@ -209,7 +209,7 @@ for epoch in range(10):
 
 ```
 ## Testing 
-```
+```ruby
   model.eval()
 
 correct = 0
