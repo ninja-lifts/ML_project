@@ -1,104 +1,134 @@
-1.
-“The intrinsic dimension (ID) represents the minimum dimension needed to describe data on a lower-dimensional manifold within high-dimensional spaces.”
+# 📘 Abstract Explanation and Notes
 
-🔎 Explanation:
-Intrinsic Dimension (ID) is a measure of the true degrees of freedom in a dataset.
+## 1. Intrinsic Dimension (ID)
 
-Even if your data lives in a high-dimensional space (e.g., images in 1000D), the actual patterns or meaningful information might lie on a lower-dimensional "manifold" (a curved surface embedded in high-D space).
+**Original Statement:**
+> “The intrinsic dimension (ID) represents the minimum dimension needed to describe data on a lower-dimensional manifold within high-dimensional spaces.”
 
-Think of a spiral on a 2D sheet. Although it exists in 2D, you only need 1 parameter (the angle or radius) to describe its position → the intrinsic dimension is 1.
+**🔎 Explanation:**
+- Intrinsic Dimension (ID) is a measure of the **true degrees of freedom** in a dataset.
+- Even if data exists in a **high-dimensional space**, meaningful patterns often lie on a **lower-dimensional manifold**.
+- A manifold is like a curved surface embedded in higher-dimensional space.
 
-💡 Example:
-MNIST digits (28×28 = 784D) can be embedded in a ~15D manifold. The actual space digits occupy is much lower than 784D.
+**💡 Example:**
+- A **spiral on a 2D sheet** exists in 2D, but can be described with just 1 parameter (e.g., angle) → **ID = 1**.
+- MNIST digits (784D input) can be embedded into a ~15D manifold.
 
-2.
-“Network pruning aims to reduce the complexity of high-dimensional networks while minimizing performance trade-offs.”
+---
 
-🔎 Explanation:
-Network pruning is a technique in deep learning where unnecessary weights/neurons/layers are removed to:
+## 2. Network Pruning
 
-Reduce memory usage
+**Original Statement:**
+> “Network pruning aims to reduce the complexity of high-dimensional networks while minimizing performance trade-offs.”
 
-Improve inference speed
+**🔎 Explanation:**
+- Pruning removes **unnecessary weights, neurons, or layers** from a neural network.
+- Benefits include:
+  - Reduced **memory usage**
+  - Faster **inference**
+  - Lower **energy consumption**
+- Aim: Keep model performance **as close to original as possible**.
 
-Lower energy consumption
+**💡 Example:**
+- In a CNN trained on CIFAR-10, remove neurons with near-zero weights.
 
-The goal is to retain accuracy as much as possible.
+---
 
-💡 Example:
-Removing neurons with near-zero weights (low contribution to output) in a CNN trained on CIFAR-10.
+## 3. Symmetry Between ID and Pruning
 
-3.
-“This symmetry motivates the exploration of ID as a metric for effective pruning.”
+**Original Statement:**
+> “This symmetry motivates the exploration of ID as a metric for effective pruning.”
 
-🔎 Explanation:
-They notice a connection (symmetry):
+**🔎 Explanation:**
+- Both **ID** and **pruning** aim to **remove redundancy**.
+- Therefore, ID can potentially guide **which layers are redundant** and **can be pruned**.
 
-Both ID and pruning deal with removing redundancy or simplifying.
+---
 
-So, maybe ID can guide us on where to prune — a new way to measure importance.
+## 4. Separate Manifolds for Modalities
 
-4.
-“For vision-language models, we investigate whether different modalities exist on separate manifolds, indicating varying complexity and prunability.”
+**Original Statement:**
+> “For vision-language models, we investigate whether different modalities exist on separate manifolds, indicating varying complexity and prunability.”
 
-🔎 Explanation:
-Vision-Language Models (VLMs) = models that process both images (vision) and text (language) (e.g., CLIP, Flamingo).
+**🔎 Explanation:**
+- **Vision-Language Models (VLMs)** handle both **image** and **text** inputs.
+- A **modality** = type of input (e.g., vision vs. language).
+- Authors ask: Do **vision and language features** lie on **different manifolds**?
+- If so, they may have **different ID values**, implying different **prunability**.
 
-A modality = input type (vision vs. language).
+**💡 Analogy:**
+- Text might lie on a flatter manifold than image features → **easier to prune**.
 
-They ask: Do vision and language live on different manifolds?
+---
 
-If yes, then they might have different intrinsic dimensions, and different pruning behavior.
+## 5. Studying ID Variations in Large VLMs
 
-💡 Analogy:
-Text may lie on a flatter manifold than image features → easier to prune without hurting performance.
+**Original Statement:**
+> “We empirically study ID variations in large-scale vision-language pre-trained models and examine the contributions of different modalities to model prunability.”
 
-5.
-“We empirically study ID variations in large-scale vision-language pre-trained models and examine the contributions of different modalities to model prunability.”
+**🔎 Explanation:**
+- The authors conduct **experiments** on large pre-trained VLMs (e.g., CLIP, BLIP, Flamingo).
+- They analyze:
+  - How ID varies across **layers**
+  - How **vision and language** components affect **model prunability**
 
-🔎 Explanation:
-They conduct experiments on big VLMs (e.g., CLIP, BLIP, Flamingo, etc.).
+---
 
-They observe how ID changes across layers/modalities.
+## 6. ID-Based Layer Importance Metric
 
-They also check how each modality (vision/text) contributes to how prunable a model is.
+**Original Statement:**
+> “We propose a layer importance metric based on ID, which can conveniently integrate with current metrics and enhance performance in vision-language model pruning.”
 
-6.
-“We propose a layer importance metric based on ID, which can conveniently integrate with current metrics and enhance performance in vision-language model pruning.”
+**🔎 Explanation:**
+- A **new pruning metric** is proposed, using **ID to score the importance of layers**.
+- This can be combined with traditional metrics like:
+  - **Weight magnitude**
+  - **Fisher information**
+- Helps preserve **critical layers** (high ID), prune **redundant ones** (low ID).
 
-🔎 Explanation:
-They introduce a new metric for pruning, using ID to score layers.
+---
 
-It can be used with existing pruning strategies (like weight magnitude, Fisher information, etc.).
+## 7. Correlation Between ID and Prunability
 
-Helps prune smarter — keeping layers with complex info (high ID), removing redundant ones.
+**Original Statement:**
+> “The experimental results show a high correlation between ID and modality prunability.”
 
-7.
-“The experimental results show a high correlation between ID and modality prunability.”
+**🔎 Explanation:**
+- Experimental results show:
+  - **High ID layers** → contain critical information → **hard to prune**
+  - **Low ID layers** → contain redundant info → **easy to prune**
 
-🔎 Explanation:
-They found empirical evidence:
+---
 
-High ID → layer more sensitive → harder to prune.
+## 8. Asymmetric Importance of Vision vs. Language
 
-Low ID → redundant → easier to prune.
+**Original Statement:**
+> “Visual representations are more sensitive and crucial to model performance, while language representations are more robust and offer greater prunability.”
 
-8.
-“Visual representations are more sensitive and crucial to model performance, while language representations are more robust and offer greater prunability.”
+**🔎 Explanation:**
+- **Visual features**:
+  - More complex
+  - Higher ID
+  - Harder to prune
+- **Language features**:
+  - Simpler
+  - Lower ID
+  - Easier to prune with minimal loss
+- Shows **asymmetry** in modality sensitivity.
 
-🔎 Explanation:
-Visual features carry more complex info → high ID → pruning hurts more.
+---
 
-Language features are simpler → low ID → easier to remove without big loss.
+## 9. Asymmetric Pruning Strategy
 
-This reflects the asymmetry between how VLMs treat vision vs language.
+**Original Statement:**
+> “Our findings suggest an asymmetric pruning strategy for vision and language modalities, guided by the ID metric.”
 
-9.
-“Our findings suggest an asymmetric pruning strategy for vision and language modalities, guided by the ID metric.”
+**🔎 Explanation:**
+- Key proposal:
+  - Don’t prune both modalities the same way.
+  - Use **ID to guide asymmetric pruning**:
+    - Prune **language layers more aggressively**
+    - Be **conservative with image layers**
 
-🔎 Explanation:
-Final takeaway:
+---
 
-Don’t prune both modalities equally.
-
-Use ID to guide pruning: prune text layers more aggressively, image layers more carefully.
