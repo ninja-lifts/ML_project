@@ -146,3 +146,4 @@ Use weight score **after** ID analysis:
 ---
 
 **Takeaway:** Intrinsic Dimension helps identify which layers and weights are crucial, enabling effective model compression without significant drop in task performance.
+
