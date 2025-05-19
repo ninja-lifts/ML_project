@@ -1,4 +1,4 @@
-# 📘 Abstract Explanation and Notes
+# 📘 Abstract 
 
 ## 1. Intrinsic Dimension (ID)
 
